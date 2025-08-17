@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% load form_extras %}
+{% block content %}
+<h2>Sell Tyre</h2>
+
+<div class="card">
+  <div class="card-body">
+    <p class="mb-1"><strong>Tyre:</strong> {{ tyre.brand }} — {{ tyre.model_with_size }} ({{ tyre.tube_type }})</p>
+    <p class="mb-1"><strong>Shop:</strong> {% if shop_code == 'TS' %}Tirupur (TS){% else %}Gobi (GS){% endif %}</p>
+    <p class="mb-3"><strong>Available:</strong> {{ available }}</p>
+
+    <form method="post" class="row g-3">
+      {% csrf_token %}
+
+      <div class="col-md-3">
+        <label class="form-label">Customer Type</label>
+        {{ form.customer_type|add_class:"form-select" }}
+      </div>
+
+      <div class="col-md-4" id="customer-name-field">
+        <label class="form-label">Customer Name (Retail only)</label>
+        {{ form.customer_name|add_class:"form-control" }}
+      </div>
+
+      <div class="col-md-2">
+        <label class="form-label">Quantity</label>
+        {{ form.quantity|add_class:"form-control" }}
+      </div>
+
+      <div class="col-md-3" id="custom-price-field">
+        <label class="form-label">Custom Price (Retail only)</label>
+        {{ form.custom_price|add_class:"form-control" }}
+      </div>
+
+      <div class="col-12">
+        <button class="btn btn-danger">Confirm Sale</button>
+        <a href="{% url 'inventory_page' %}" class="btn btn-secondary">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  const custType = document.querySelector("#id_customer_type");
+  const custNameWrap = document.querySelector("#customer-name-field");
+  const customPriceWrap = document.querySelector("#custom-price-field");
+
+  function toggleFields() {
+    if (custType.value === "Amazon") {
+      custNameWrap.style.display = "none";
+      customPriceWrap.style.display = "none";
+    } else {
+      custNameWrap.style.display = "block";
+      customPriceWrap.style.display = "block";
+    }
+  }
+  if (custType) {
+    custType.addEventListener("change", toggleFields);
+    window.addEventListener("load", toggleFields);
+  }
+</script>
+{% endblock %}

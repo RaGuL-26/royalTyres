@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% load form_extras %}
+{% block content %}
+<h2>Sales Log</h2>
+
+<!-- Filter Form -->
+<form method="get" class="row g-2 mb-3">
+  <div class="col-auto">
+    <input type="date" name="start_date" value="{{ request.GET.start_date }}" class="form-control" placeholder="Start date">
+  </div>
+  <div class="col-auto">
+    <input type="date" name="end_date" value="{{ request.GET.end_date }}" class="form-control" placeholder="End date">
+  </div>
+  <div class="col-auto">
+    <select name="shop" class="form-select">
+      <option value="">All Shops</option>
+      <option value="TS" {% if request.GET.shop == "TS" %}selected{% endif %}>Tirupur Shop</option>
+      <option value="GS" {% if request.GET.shop == "GS" %}selected{% endif %}>Gobi Shop</option>
+    </select>
+  </div>
+  <div class="col-auto">
+    <select name="type" class="form-select">
+      <option value="">All Types</option>
+      <option value="Retail" {% if request.GET.type == "Retail" %}selected{% endif %}>Retail</option>
+      <option value="Amazon" {% if request.GET.type == "Amazon" %}selected{% endif %}>Amazon</option>
+    </select>
+  </div>
+  <div class="col-auto">
+    <button type="submit" class="btn btn-primary">Filter</button>
+  </div>
+  <div class="col-auto">
+    <a href="{% url 'sale_log' %}" class="btn btn-secondary">Reset</a>
+  </div>
+</form>
+
+<table class="table table-bordered table-sm align-middle">
+  <thead class="table-light">
+    <tr>
+      <th>Date</th>
+      <th>Tyre</th>
+      <th>Shop</th>
+      <th>Type</th>
+      <th>Customer</th>
+      <th>Qty</th>
+      <th>Unit Price</th>
+      <th>Total</th>
+      <th>Invoice/Unit</th>
+      <th>Profit</th>
+      <th>By</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for s in sales %}
+    <tr>
+      <td>{{ s.sold_at|date:"Y-m-d H:i" }}</td>
+      <td>{{ s.tyre.brand }} — {{ s.tyre.model_with_size }}</td>
+      <td>{{ s.get_shop_code_display }}</td>
+      <td>{{ s.customer_type }}</td>
+      <td>{{ s.customer_name|default:"-" }}</td>
+      <td>{{ s.quantity_sold }}</td>
+      <td>{{ s.unit_price }}</td>
+      <td>{{ s.total_amount }}</td>
+      <td>{{ s.tyre.invoice_price }}</td>
+      <td><strong>{{ s.profit }}</strong></td>
+      <td>{{ s.updated_by|default:"-" }}</td>
+    </tr>
+  {% empty %}
+    <tr><td colspan="11" class="text-center">No sales yet</td></tr>
+  {% endfor %}
+  </tbody>
+
+  {% if sales %}
+  <tfoot>
+    <tr class="table-success">
+      <td colspan="9" class="text-end"><strong>Total Profit:</strong></td>
+      <td colspan="2"><strong>{{ total_profit }}</strong></td>
+    </tr>
+  </tfoot>
+  {% endif %}
+</table>
+{% endblock %}

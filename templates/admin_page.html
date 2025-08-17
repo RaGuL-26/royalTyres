@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% load form_extras %} 
+{% block content %}
+
+<div class="col-12 mt-3">
+    <a href="{% url 'admin_inventory' %}" class="btn btn-danger">
+        Go to Inventory (Delete Tyres)
+    </a>
+</div>
+
+<h2>Add Tyre (Admin)</h2>
+<form method="post" class="row g-3">
+  {% csrf_token %}
+  <div class="col-md-3">
+    <label class="form-label">Brand</label>
+    {{ form.brand|add_class:"form-select" }}
+  </div>
+  <div class="col-md-5">
+    <label class="form-label">Model with Size</label>
+    {{ form.model_with_size|add_class:"form-control" }}
+  </div>
+  <div class="col-md-2">
+    <label class="form-label">Tube Type</label>
+    {{ form.tube_type|add_class:"form-select" }}
+  </div>
+  <div class="col-md-2">
+    <label class="form-label">Invoice Price</label>
+    {{ form.invoice_price|add_class:"form-control" }}
+  </div>
+
+  <div class="col-md-2">
+    <label class="form-label">Tirupur (TS)</label>
+    {{ form.quantity_TS|add_class:"form-control" }}
+  </div>
+  <div class="col-md-2">
+    <label class="form-label">Gobi (GS)</label>
+    {{ form.quantity_GS|add_class:"form-control" }}
+  </div>
+
+  <div class="col-md-2">
+    <label class="form-label">Listed on Amazon?</label>
+    {{ form.amazon_listed }}
+  </div>
+  <div class="col-md-2">
+    <label class="form-label">Amazon Price</label>
+    {{ form.amazon_price|add_class:"form-control" }}
+  </div>
+
+  <div class="col-12">
+    <button class="btn btn-success">Save</button>
+  </div>
+</form>
+{% endblock %}

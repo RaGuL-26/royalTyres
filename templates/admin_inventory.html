@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Admin Inventory - Delete Tyres</h2>
+
+<table class="table table-bordered table-striped">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Brand</th>
+      <th>Model with Size</th>
+      <th>Tube Type</th>
+      <th>Invoice Price</th>
+      <th>TS Qty</th>
+      <th>GS Qty</th>
+      <th>Amazon Price</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for tyre in tyres %}
+    <tr>
+      <td>{{ tyre.id }}</td>
+      <td>{{ tyre.brand }}</td>
+      <td>{{ tyre.model_with_size }}</td>
+      <td>{{ tyre.tube_type }}</td>
+      <td>{{ tyre.invoice_price }}</td>
+      <td>{{ tyre.quantity_TS }}</td>
+      <td>{{ tyre.quantity_GS }}</td>
+      <td>{{ tyre.amazon_price }}</td>
+      <td>
+        <a href="{% url 'delete_tyre' tyre.id %}" 
+           class="btn btn-danger btn-sm"
+           onclick="return confirm('Are you sure you want to delete this tyre?');">
+           Delete
+        </a>
+      </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="9">No tyres found.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}
