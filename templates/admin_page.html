@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load form_extras %} 
+{% load form_extras %}
 {% block content %}
 
 <div class="container mt-5">
@@ -33,6 +33,12 @@
         <div class="col-md-5 form-floating">
           {{ form.model_with_size|add_class:"form-control" }}
           <label>Model with Size</label>
+        </div>
+
+        <!-- Vehicle Type -->
+        <div class="col-md-2 form-floating">
+          {{ form.vehicle_type|add_class:"form-select" }}
+          <label>Vehicle Type</label>
         </div>
 
         <!-- Tube Type -->
