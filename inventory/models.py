@@ -1,7 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-
+    
+    
 class Tyre(models.Model):
     BRAND_CHOICES = [
         ('CEAT', 'CEAT'),
@@ -14,9 +15,19 @@ class Tyre(models.Model):
         ('Tubeless', 'Tubeless'),
     ]
 
+    VEHICLE_TYPE_CHOICES = [
+        ('2W', '2 Wheeler'),
+        ('PCR', 'Passenger Car Radial'),
+        ('LCV', 'Light Commercial Vehicle'),
+        ('SCV', 'Small Commercial Vehicle'),
+        ('TBB', 'Truck Bias'),
+        ('TBR', 'Truck Radial'),
+    ]
+
     brand = models.CharField(max_length=50, choices=BRAND_CHOICES)
     model_with_size = models.CharField(max_length=150)  # e.g., "Secura Drive 195/55 R16"
     tube_type = models.CharField(max_length=20, choices=TUBE_TYPE_CHOICES)
+    vehicle_type = models.CharField(max_length=20, choices=VEHICLE_TYPE_CHOICES, default='PCR')  # New field
 
     # Shop stocks
     quantity_TS = models.PositiveIntegerField(default=0, verbose_name="Tirupur Stock")
@@ -28,7 +39,10 @@ class Tyre(models.Model):
     amazon_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
 
     def __str__(self):
-        return f"{self.brand} - {self.model_with_size} ({self.tube_type})"
+        return f"{self.brand} - {self.model_with_size} ({self.tube_type}, {self.vehicle_type})"
+    
+
+
 
 
 class SaleLog(models.Model):

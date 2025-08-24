@@ -4,7 +4,6 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Q, Sum
 from django.contrib.auth import authenticate, login, logout
-from django.utils.dateparse import parse_date
 
 from .models import Tyre, SaleLog
 from .forms import TyreForm, TyreEditForm, SellForm
@@ -29,6 +28,7 @@ def admin_page(request):
 def inventory_page(request):
     query = request.GET.get("q", "")
     tube_type = request.GET.get("tube_type", "")
+    vehicle_type = request.GET.get("vehicle_type", "")
 
     tyres = Tyre.objects.all().order_by("brand", "model_with_size")
 
@@ -41,10 +41,14 @@ def inventory_page(request):
     if tube_type:
         tyres = tyres.filter(tube_type__iexact=tube_type)
 
+    if vehicle_type:
+        tyres = tyres.filter(vehicle_type__iexact=vehicle_type)
+
     return render(request, "inventory_page.html", {
         "tyres": tyres,
         "query": query,
-        "tube_type": tube_type
+        "tube_type": tube_type,
+        "vehicle_type": vehicle_type,
     })
 
 

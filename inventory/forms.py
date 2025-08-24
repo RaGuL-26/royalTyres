@@ -6,9 +6,15 @@ class TyreForm(forms.ModelForm):
     class Meta:
         model = Tyre
         fields = [
-            'brand', 'model_with_size', 'tube_type',
-            'quantity_TS', 'quantity_GS',
-            'invoice_price', 'amazon_listed', 'amazon_price'
+            'brand', 
+            'model_with_size', 
+            'vehicle_type',     # ✅ Added vehicle type
+            'tube_type',        # ✅ Added tube/tubeless
+            'quantity_TS', 
+            'quantity_GS',
+            'invoice_price', 
+            'amazon_listed', 
+            'amazon_price'
         ]
 
     def clean(self):
@@ -23,7 +29,11 @@ class TyreForm(forms.ModelForm):
 class TyreEditForm(forms.ModelForm):
     class Meta:
         model = Tyre
-        fields = ['invoice_price', 'amazon_listed', 'amazon_price']
+        fields = [
+            'invoice_price', 
+            'amazon_listed', 
+            'amazon_price'
+        ]
 
     def clean(self):
         cleaned = super().clean()
