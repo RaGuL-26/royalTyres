@@ -1,76 +1,131 @@
 {% extends "base.html" %}
 {% load form_extras %}
 {% block content %}
-<h2>Inventory</h2>
 
-<form method="get" class="row g-2 mb-3">
-  <div class="col-md-4">
-    <input type="text" name="q" class="form-control"
-           placeholder="Search brand or model with size"
-           value="{{ request.GET.q }}">
-  </div>
-  <div class="col-md-3">
-    <select name="tube_type" class="form-select">
-      <option value="">-- Tube Type --</option>
-      <option value="Tube" {% if request.GET.tube_type == "Tube" %}selected{% endif %}>Tube</option>
-      <option value="Tubeless" {% if request.GET.tube_type == "Tubeless" %}selected{% endif %}>Tubeless</option>
-    </select>
-  </div>
-  <div class="col-md-3">
-    <select name="vehicle_type" class="form-select">
-      <option value="">-- Vehicle Type --</option>
-      <option value="2W" {% if request.GET.vehicle_type == "2W" %}selected{% endif %}>2W</option>
-      <option value="PCR" {% if request.GET.vehicle_type == "PCR" %}selected{% endif %}>PCR</option>
-      <option value="LCV" {% if request.GET.vehicle_type == "LCV" %}selected{% endif %}>LCV</option>
-      <option value="SCV" {% if request.GET.vehicle_type == "SCV" %}selected{% endif %}>SCV</option>
-      <option value="TBB" {% if request.GET.vehicle_type == "TBB" %}selected{% endif %}>TBB</option>
-      <option value="TBR" {% if request.GET.vehicle_type == "TBR" %}selected{% endif %}>TBR</option>
-    </select>
-  </div>
-  <div class="col-md-2">
-    <button class="btn btn-primary w-100">Search</button>
-  </div>
-  <div class="col-md-2">
-    <a href="{% url 'inventory_page' %}" class="btn btn-secondary w-100">Reset</a>
-  </div>
-</form>
+<div class="container mt-5">
 
-<table class="table table-bordered table-sm align-middle">
-  <thead class="table-light">
-    <tr>
-      <th>Brand</th>
-      <th>Model with Size</th>
-      <th>Tube Type</th>
-      <th>Vehicle Type</th>
-      <th>TS Qty</th>
-      <th>GS Qty</th>
-      <th>Invoice</th>
-      <th>Amazon?</th>
-      <th>Amazon Price</th>
-      <th>Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-  {% for tyre in tyres %}
-    <tr>
-      <td>{{ tyre.brand }}</td>
-      <td>{{ tyre.model_with_size }}</td>
-      <td>{{ tyre.tube_type }}</td>
-      <td>{{ tyre.vehicle_type }}</td>
-      <td>{{ tyre.quantity_TS }}</td>
-      <td>{{ tyre.quantity_GS }}</td>
-      <td>{{ tyre.invoice_price }}</td>
-      <td>{% if tyre.amazon_listed %}✔{% else %}❌{% endif %}</td>
-      <td>{{ tyre.amazon_price|default:"-" }}</td>
-      <td>
-        <a href="{% url 'edit_tyre' tyre.id %}" class="btn btn-sm btn-warning">Edit</a>
-        <a href="{% url 'sell_tyre' tyre.id 'TS' %}" class="btn btn-sm btn-danger">Sell (TS)</a>
-        <a href="{% url 'sell_tyre' tyre.id 'GS' %}" class="btn btn-sm btn-danger">Sell (GS)</a>
-      </td>
-    </tr>
-  {% empty %}
-    <tr><td colspan="10" class="text-center">No tyres found</td></tr>
-  {% endfor %}
-  </tbody>
-</table>
+  <h2 class="mb-4 text-primary fw-bold">Inventory</h2>
+
+  <!-- Search Filters -->
+  <form method="get" class="row g-3 mb-4 p-3 bg-dark rounded shadow-sm">
+    <div class="col-md-4 form-floating">
+      <input type="text" name="q" class="form-control" id="searchInput"
+             placeholder="Search brand or model with size"
+             value="{{ request.GET.q }}">
+      <label for="searchInput" class="text-white">Search brand or model</label>
+    </div>
+
+    <div class="col-md-3 form-floating">
+      <select name="tube_type" class="form-select" id="tubeTypeSelect">
+        <option value="">-- Tube Type --</option>
+        <option value="Tube" {% if request.GET.tube_type == "Tube" %}selected{% endif %}>Tube</option>
+        <option value="Tubeless" {% if request.GET.tube_type == "Tubeless" %}selected{% endif %}>Tubeless</option>
+      </select>
+      <label for="tubeTypeSelect" class="text-white">Tube Type</label>
+    </div>
+
+    <div class="col-md-3 form-floating">
+      <select name="vehicle_type" class="form-select" id="vehicleTypeSelect">
+        <option value="">-- Vehicle Type --</option>
+        <option value="2W" {% if request.GET.vehicle_type == "2W" %}selected{% endif %}>2W</option>
+        <option value="PCR" {% if request.GET.vehicle_type == "PCR" %}selected{% endif %}>PCR</option>
+        <option value="LCV" {% if request.GET.vehicle_type == "LCV" %}selected{% endif %}>LCV</option>
+        <option value="SCV" {% if request.GET.vehicle_type == "SCV" %}selected{% endif %}>SCV</option>
+        <option value="TBB" {% if request.GET.vehicle_type == "TBB" %}selected{% endif %}>TBB</option>
+        <option value="TBR" {% if request.GET.vehicle_type == "TBR" %}selected{% endif %}>TBR</option>
+      </select>
+      <label for="vehicleTypeSelect" class="text-white">Vehicle Type</label>
+    </div>
+
+    <div class="col-md-2 d-grid">
+      <button class="btn btn-success">Search</button>
+    </div>
+    <div class="col-md-2 d-grid">
+      <a href="{% url 'inventory_page' %}" class="btn btn-outline-secondary">Reset</a>
+    </div>
+  </form>
+
+  <!-- Inventory Table -->
+  <div class="table-responsive shadow-sm rounded">
+    <table class="table table-bordered table-hover align-middle text-center mb-0" style="background-color:#1b1f27; color:#f8f9fa;">
+      <thead class="table-primary text-center">
+        <tr>
+          <th>Brand</th>
+          <th>Model with Size</th>
+          <th>Tube Type</th>
+          <th>Vehicle Type</th>
+          <th>TS Qty</th>
+          <th>GS Qty</th>
+          <th>Invoice</th>
+          <th>Amazon?</th>
+          <th>Amazon Price</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for tyre in tyres %}
+        <tr>
+          <td>{{ tyre.brand }}</td>
+          <td>{{ tyre.model_with_size }}</td>
+          <td>{{ tyre.tube_type }}</td>
+          <td>{{ tyre.vehicle_type }}</td>
+          <td>{{ tyre.quantity_TS }}</td>
+          <td>{{ tyre.quantity_GS }}</td>
+          <td>{{ tyre.invoice_price }}</td>
+          <td>{% if tyre.amazon_listed %}✔{% else %}❌{% endif %}</td>
+          <td>{{ tyre.amazon_price|default:"-" }}</td>
+          <td class="d-flex gap-1 justify-content-center flex-wrap">
+            <a href="{% url 'edit_tyre' tyre.id %}" class="btn btn-warning btn-sm">Edit</a>
+            <a href="{% url 'sell_tyre' tyre.id 'TS' %}" class="btn btn-danger btn-sm">Sell (TS)</a>
+            <a href="{% url 'sell_tyre' tyre.id 'GS' %}" class="btn btn-danger btn-sm">Sell (GS)</a>
+          </td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="10">No tyres found</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<style>
+  body {
+    background: linear-gradient(135deg, #232f3e, #1b1f27);
+    color: #f8f9fa;
+  }
+  h2 {
+    color: #0d6efd;
+  }
+  .form-floating > label {
+    color: #f8f9fa;
+  }
+  .form-control, .form-select {
+    background-color: #f8f9fa;
+  }
+  .btn-success {
+    background: linear-gradient(135deg, #198754, #20c997);
+    border: none;
+    color: #fff;
+  }
+  .btn-success:hover {
+    background: linear-gradient(135deg, #20c997, #198754);
+  }
+  .btn-outline-secondary {
+    border: 2px solid #6c757d;
+    color: #6c757d;
+  }
+  .btn-outline-secondary:hover {
+    background: #6c757d;
+    color: #fff;
+  }
+  .table-primary th {
+    background-color: #0d6efd !important;
+    color: #fff;
+  }
+  .table-hover tbody tr:hover {
+    background-color: rgba(13, 110, 253, 0.1);
+  }
+</style>
+
 {% endblock %}

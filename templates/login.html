@@ -1,20 +1,47 @@
 {% extends "base.html" %}
+{% load static %}
+
 {% block content %}
-<div class="row justify-content-center">
-  <div class="col-md-4">
-    <h3 class="mb-3">Login</h3>
-    <form method="post">
-      {% csrf_token %}
-      <div class="mb-3">
-        <label class="form-label">Username</label>
-        <input class="form-control" type="text" name="username" required>
+<div class="row justify-content-center align-items-center" style="min-height: 80vh;">
+  <div class="col-md-5 col-lg-4">
+    <div class="card shadow-lg p-4">
+      <div class="text-center mb-4">
+        <!-- Logo -->
+        <img src="{% static 'images/logo.png' %}" alt="Royalty Res Logo" class="img-fluid" style="max-height: 80px;">
+        <h3 class="mt-2 fw-bold">Tyre Inventory Login</h3>
       </div>
-      <div class="mb-3">
-        <label class="form-label">Password</label>
-        <input class="form-control" type="password" name="password" required>
+      <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label class="form-label">Username</label>
+          <input class="form-control" type="text" name="username" placeholder="Enter your username" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Password</label>
+          <input class="form-control" type="password" name="password" placeholder="Enter your password" required>
+        </div>
+        <div class="d-grid">
+          <button class="btn btn-primary btn-lg">Login</button>
+        </div>
+      </form>
+      <div class="text-center mt-3">
+        <small class="text-muted">&copy; 2024 Royalty Res. All rights reserved.</small>
       </div>
-      <button class="btn btn-primary">Login</button>
-    </form>
+    </div>
   </div>
 </div>
+
+<style>
+  body {
+    background: linear-gradient(135deg, #232f3e, #1b1f27);
+  }
+  .card {
+    border-radius: 12px;
+    background-color: #f8f9fa;
+  }
+  .form-control:focus {
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    border-color: #0d6efd;
+  }
+</style>
 {% endblock %}

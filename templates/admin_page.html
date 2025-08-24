@@ -2,56 +2,130 @@
 {% load form_extras %} 
 {% block content %}
 
-<div class="col-12 mt-3">
-    <a href="{% url 'admin_inventory' %}" class="btn btn-danger">
-        Go to Inventory (Delete Tyres)
-    </a>
+<div class="container mt-5">
+
+  <!-- Navigation buttons -->
+  <div class="mb-4 d-flex justify-content-between">
+      <a href="{% url 'inventory_page' %}" class="btn btn-outline-danger">
+          ← Back to Inventory
+      </a>
+      <a href="{% url 'admin_inventory' %}" class="btn btn-outline-warning">
+          🗑️ Go to Delete Tyres
+      </a>
+  </div>
+
+  <!-- Form Card -->
+  <div class="card shadow-lg border-0">
+    <div class="card-header bg-primary text-white">
+      <h3 class="mb-0">Add Tyre (Admin)</h3>
+    </div>
+    <div class="card-body">
+      <form method="post" class="row g-4">
+        {% csrf_token %}
+
+        <!-- Brand -->
+        <div class="col-md-3 form-floating">
+          {{ form.brand|add_class:"form-select" }}
+          <label>Brand</label>
+        </div>
+
+        <!-- Model -->
+        <div class="col-md-5 form-floating">
+          {{ form.model_with_size|add_class:"form-control" }}
+          <label>Model with Size</label>
+        </div>
+
+        <!-- Tube Type -->
+        <div class="col-md-2 form-floating">
+          {{ form.tube_type|add_class:"form-select" }}
+          <label>Tube Type</label>
+        </div>
+
+        <!-- Invoice Price -->
+        <div class="col-md-2 form-floating">
+          {{ form.invoice_price|add_class:"form-control" }}
+          <label>Invoice Price</label>
+        </div>
+
+        <!-- Quantity TS -->
+        <div class="col-md-2 form-floating">
+          {{ form.quantity_TS|add_class:"form-control" }}
+          <label>Tirupur (TS)</label>
+        </div>
+
+        <!-- Quantity GS -->
+        <div class="col-md-2 form-floating">
+          {{ form.quantity_GS|add_class:"form-control" }}
+          <label>Gobi (GS)</label>
+        </div>
+
+        <!-- Amazon Listed -->
+        <div class="col-md-2 d-flex align-items-center mt-2">
+          <div class="form-check">
+            {{ form.amazon_listed|add_class:"form-check-input" }}
+            <label class="form-check-label">Listed on Amazon?</label>
+          </div>
+        </div>
+
+        <!-- Amazon Price -->
+        <div class="col-md-2 form-floating">
+          {{ form.amazon_price|add_class:"form-control" }}
+          <label>Amazon Price</label>
+        </div>
+
+        <!-- Save Button -->
+        <div class="col-12">
+          <button type="submit" class="btn btn-success btn-lg w-100 shadow-sm">
+            Add Tyre
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
 </div>
 
-<h2>Add Tyre (Admin)</h2>
-<form method="post" class="row g-3">
-  {% csrf_token %}
-  <div class="col-md-3">
-    <label class="form-label">Brand</label>
-    {{ form.brand|add_class:"form-select" }}
-  </div>
-  <div class="col-md-4">
-    <label class="form-label">Model with Size</label>
-    {{ form.model_with_size|add_class:"form-control" }}
-  </div>
-  <div class="col-md-2">
-    <label class="form-label">Vehicle Type</label>
-    {{ form.vehicle_type|add_class:"form-select" }}
-  </div>
-  <div class="col-md-2">
-    <label class="form-label">Tube Type</label>
-    {{ form.tube_type|add_class:"form-select" }}
-  </div>
-  <div class="col-md-2">
-    <label class="form-label">Invoice Price</label>
-    {{ form.invoice_price|add_class:"form-control" }}
-  </div>
+<style>
+  body {
+    background: linear-gradient(135deg, #232f3e, #1b1f27);
+    color: #f8f9fa;
+  }
+  .card-header {
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+  .form-floating > label {
+    color: #0d6efd;
+  }
+  .form-select, .form-control {
+    background-color: #f8f9fa;
+  }
+  .btn-success {
+    background: linear-gradient(135deg, #198754, #20c997);
+    border: none;
+    color: #fff;
+  }
+  .btn-success:hover {
+    background: linear-gradient(135deg, #20c997, #198754);
+  }
+  .btn-outline-danger, .btn-outline-warning {
+    border-width: 2px;
+  }
+  .btn-outline-danger {
+    color: #dc3545;
+  }
+  .btn-outline-danger:hover {
+    background: #dc3545;
+    color: #fff;
+  }
+  .btn-outline-warning {
+    color: #ffc107;
+  }
+  .btn-outline-warning:hover {
+    background: #ffc107;
+    color: #212529;
+  }
+</style>
 
-  <div class="col-md-2">
-    <label class="form-label">Tirupur (TS)</label>
-    {{ form.quantity_TS|add_class:"form-control" }}
-  </div>
-  <div class="col-md-2">
-    <label class="form-label">Gobi (GS)</label>
-    {{ form.quantity_GS|add_class:"form-control" }}
-  </div>
-
-  <div class="col-md-2">
-    <label class="form-label">Listed on Amazon?</label>
-    {{ form.amazon_listed }}
-  </div>
-  <div class="col-md-2">
-    <label class="form-label">Amazon Price</label>
-    {{ form.amazon_price|add_class:"form-control" }}
-  </div>
-
-  <div class="col-12">
-    <button class="btn btn-success">Save</button>
-  </div>
-</form>
 {% endblock %}

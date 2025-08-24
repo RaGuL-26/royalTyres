@@ -1,81 +1,149 @@
 {% extends "base.html" %}
 {% load form_extras %}
 {% block content %}
-<h2>Sales Log</h2>
 
-<!-- Filter Form -->
-<form method="get" class="row g-2 mb-3">
-  <div class="col-auto">
-    <input type="date" name="start_date" value="{{ request.GET.start_date }}" class="form-control" placeholder="Start date">
-  </div>
-  <div class="col-auto">
-    <input type="date" name="end_date" value="{{ request.GET.end_date }}" class="form-control" placeholder="End date">
-  </div>
-  <div class="col-auto">
-    <select name="shop" class="form-select">
-      <option value="">All Shops</option>
-      <option value="TS" {% if request.GET.shop == "TS" %}selected{% endif %}>Tirupur Shop</option>
-      <option value="GS" {% if request.GET.shop == "GS" %}selected{% endif %}>Gobi Shop</option>
-    </select>
-  </div>
-  <div class="col-auto">
-    <select name="type" class="form-select">
-      <option value="">All Types</option>
-      <option value="Retail" {% if request.GET.type == "Retail" %}selected{% endif %}>Retail</option>
-      <option value="Amazon" {% if request.GET.type == "Amazon" %}selected{% endif %}>Amazon</option>
-    </select>
-  </div>
-  <div class="col-auto">
-    <button type="submit" class="btn btn-primary">Filter</button>
-  </div>
-  <div class="col-auto">
-    <a href="{% url 'sale_log' %}" class="btn btn-secondary">Reset</a>
-  </div>
-</form>
+<div class="container mt-5 position-relative">
 
-<table class="table table-bordered table-sm align-middle">
-  <thead class="table-light">
-    <tr>
-      <th>Date</th>
-      <th>Tyre</th>
-      <th>Shop</th>
-      <th>Type</th>
-      <th>Customer</th>
-      <th>Qty</th>
-      <th>Unit Price</th>
-      <th>Total</th>
-      <th>Invoice/Unit</th>
-      <th>Profit</th>
-      <th>By</th>
-    </tr>
-  </thead>
-  <tbody>
-  {% for s in sales %}
-    <tr>
-      <td>{{ s.sold_at|date:"Y-m-d H:i" }}</td>
-      <td>{{ s.tyre.brand }} — {{ s.tyre.model_with_size }}</td>
-      <td>{{ s.get_shop_code_display }}</td>
-      <td>{{ s.customer_type }}</td>
-      <td>{{ s.customer_name|default:"-" }}</td>
-      <td>{{ s.quantity_sold }}</td>
-      <td>{{ s.unit_price }}</td>
-      <td>{{ s.total_amount }}</td>
-      <td>{{ s.tyre.invoice_price }}</td>
-      <td><strong>{{ s.profit }}</strong></td>
-      <td>{{ s.updated_by|default:"-" }}</td>
-    </tr>
-  {% empty %}
-    <tr><td colspan="11" class="text-center">No sales yet</td></tr>
-  {% endfor %}
-  </tbody>
+  <h2 class="mb-4 text-primary fw-bold">Sales Log</h2>
 
   {% if sales %}
-  <tfoot>
-    <tr class="table-success">
-      <td colspan="9" class="text-end"><strong>Total Profit:</strong></td>
-      <td colspan="2"><strong>{{ total_profit }}</strong></td>
-    </tr>
-  </tfoot>
+  <!-- Floating Profit Box -->
+  <div class="position-fixed end-0 m-4 p-3 shadow-lg rounded text-center profit-box"
+       style="top: 80px; background: linear-gradient(135deg,#198754,#20c997); color:#fff; z-index:1050; min-width:220px;">
+    <h5 class="mb-1">💰 Total Profit</h5>
+    <h3 class="fw-bold">{{ total_profit }}</h3>
+  </div>
   {% endif %}
-</table>
+
+  <!-- Filter Form -->
+  <form method="get" class="row g-3 mb-4 p-3 bg-dark rounded shadow-sm">
+    <div class="col-md-2 form-floating">
+      <input type="date" name="start_date" value="{{ request.GET.start_date }}" class="form-control" id="startDate">
+      <label for="startDate" class="text-white">Start Date</label>
+    </div>
+    <div class="col-md-2 form-floating">
+      <input type="date" name="end_date" value="{{ request.GET.end_date }}" class="form-control" id="endDate">
+      <label for="endDate" class="text-white">End Date</label>
+    </div>
+    <div class="col-md-2 form-floating">
+      <select name="shop" class="form-select" id="shopSelect">
+        <option value="">All Shops</option>
+        <option value="TS" {% if request.GET.shop == "TS" %}selected{% endif %}>Tirupur Shop</option>
+        <option value="GS" {% if request.GET.shop == "GS" %}selected{% endif %}>Gobi Shop</option>
+      </select>
+      <label for="shopSelect" class="text-white">Shop</label>
+    </div>
+    <div class="col-md-2 form-floating">
+      <select name="type" class="form-select" id="typeSelect">
+        <option value="">All Types</option>
+        <option value="Retail" {% if request.GET.type == "Retail" %}selected{% endif %}>Retail</option>
+        <option value="Amazon" {% if request.GET.type == "Amazon" %}selected{% endif %}>Amazon</option>
+      </select>
+      <label for="typeSelect" class="text-white">Type</label>
+    </div>
+    <div class="col-md-2 d-grid">
+      <button type="submit" class="btn btn-success">Filter</button>
+    </div>
+    <div class="col-md-2 d-grid">
+      <a href="{% url 'sale_log' %}" class="btn btn-outline-secondary">Reset</a>
+    </div>
+  </form>
+
+  <!-- Sales Table -->
+  <div class="table-responsive shadow-sm rounded">
+    <table class="table table-bordered table-hover align-middle text-center mb-0"
+           style="background-color:#1b1f27; color:#f8f9fa;">
+      <thead class="table-primary text-center">
+        <tr>
+          <th>Date</th>
+          <th>Tyre</th>
+          <th>Vehicle Type</th>
+          <th>Shop</th>
+          <th>Type</th>
+          <th>Customer</th>
+          <th>Qty</th>
+          <th>Unit Price</th>
+          <th>Total</th>
+          <th>Invoice/Unit</th>
+          <th>Profit</th>
+          <th>By</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for s in sales %}
+        <tr>
+          <td>{{ s.sold_at|date:"Y-m-d H:i" }}</td>
+          <td>{{ s.tyre.brand }} — {{ s.tyre.model_with_size }}</td>
+          <td><span class="badge bg-info text-dark">{{ s.tyre.vehicle_type }}</span></td>
+          <td>{{ s.get_shop_code_display }}</td>
+          <td>{{ s.customer_type }}</td>
+          <td>{{ s.customer_name|default:"-" }}</td>
+          <td>{{ s.quantity_sold }}</td>
+          <td>{{ s.unit_price }}</td>
+          <td>{{ s.total_amount }}</td>
+          <td>{{ s.tyre.invoice_price }}</td>
+          <td><strong>{{ s.profit }}</strong></td>
+          <td>{{ s.updated_by|default:"-" }}</td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="12" class="text-center">No sales yet</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<style>
+  body {
+    background: linear-gradient(135deg, #232f3e, #1b1f27);
+    color: #f8f9fa;
+  }
+  h2 {
+    color: #0d6efd;
+  }
+  .form-floating > label {
+    color: #f8f9fa;
+  }
+  .form-control, .form-select {
+    background-color: #f8f9fa;
+  }
+  .btn-success {
+    background: linear-gradient(135deg, #198754, #20c997);
+    border: none;
+    color: #fff;
+  }
+  .btn-success:hover {
+    background: linear-gradient(135deg, #20c997, #198754);
+  }
+  .btn-outline-secondary {
+    border: 2px solid #6c757d;
+    color: #6c757d;
+  }
+  .btn-outline-secondary:hover {
+    background: #6c757d;
+    color: #fff;
+  }
+  .table-primary th {
+    background-color: #0d6efd !important;
+    color: #fff;
+  }
+  .table-hover tbody tr:hover {
+    background-color: rgba(13, 110, 253, 0.1);
+  }
+  .badge.bg-info {
+    font-size: 0.85rem;
+    padding: 0.35em 0.6em;
+    border-radius: 0.35rem;
+  }
+  /* Floating Profit Box Animation */
+  .profit-box {
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+  }
+</style>
+
 {% endblock %}

@@ -1,43 +1,55 @@
 {% extends "base.html" %}
 {% load form_extras %}
 {% block content %}
-<h2>Sell Tyre</h2>
 
-<div class="card">
-  <div class="card-body">
-    <p class="mb-1"><strong>Tyre:</strong> {{ tyre.brand }} — {{ tyre.model_with_size }} ({{ tyre.tube_type }})</p>
-    <p class="mb-1"><strong>Shop:</strong> {% if shop_code == 'TS' %}Tirupur (TS){% else %}Gobi (GS){% endif %}</p>
-    <p class="mb-3"><strong>Available:</strong> {{ available }}</p>
+<div class="container mt-5">
 
-    <form method="post" class="row g-3">
-      {% csrf_token %}
+  <h2 class="mb-4 text-primary fw-bold">Sell Tyre</h2>
 
-      <div class="col-md-3">
-        <label class="form-label">Customer Type</label>
-        {{ form.customer_type|add_class:"form-select" }}
-      </div>
+  <div class="card shadow-lg border-0">
+    <div class="card-body">
 
-      <div class="col-md-4" id="customer-name-field">
-        <label class="form-label">Customer Name (Retail only)</label>
-        {{ form.customer_name|add_class:"form-control" }}
-      </div>
+      <p class="mb-2"><strong>Tyre:</strong> {{ tyre.brand }} — {{ tyre.model_with_size }} ({{ tyre.tube_type }})</p>
+      <p class="mb-2"><strong>Shop:</strong> {% if shop_code == 'TS' %}Tirupur (TS){% else %}Gobi (GS){% endif %}</p>
+      <p class="mb-4"><strong>Available:</strong> {{ available }}</p>
 
-      <div class="col-md-2">
-        <label class="form-label">Quantity</label>
-        {{ form.quantity|add_class:"form-control" }}
-      </div>
+      <form method="post" class="row g-4">
+        {% csrf_token %}
 
-      <div class="col-md-3" id="custom-price-field">
-        <label class="form-label">Custom Price (Retail only)</label>
-        {{ form.custom_price|add_class:"form-control" }}
-      </div>
+        <!-- Customer Type -->
+        <div class="col-md-3 form-floating">
+          {{ form.customer_type|add_class:"form-select" }}
+          <label for="id_customer_type" class="text-dark">Customer Type</label>
+        </div>
 
-      <div class="col-12">
-        <button class="btn btn-danger">Confirm Sale</button>
-        <a href="{% url 'inventory_page' %}" class="btn btn-secondary">Cancel</a>
-      </div>
-    </form>
+        <!-- Customer Name (Retail only) -->
+        <div class="col-md-4 form-floating" id="customer-name-field">
+          {{ form.customer_name|add_class:"form-control" }}
+          <label for="id_customer_name" class="text-dark">Customer Name (Retail only)</label>
+        </div>
+
+        <!-- Quantity -->
+        <div class="col-md-2 form-floating">
+          {{ form.quantity|add_class:"form-control" }}
+          <label for="id_quantity" class="text-dark">Quantity</label>
+        </div>
+
+        <!-- Custom Price (Retail only) -->
+        <div class="col-md-3 form-floating" id="custom-price-field">
+          {{ form.custom_price|add_class:"form-control" }}
+          <label for="id_custom_price" class="text-dark">Custom Price (Retail only)</label>
+        </div>
+
+        <!-- Buttons -->
+        <div class="col-12 d-grid gap-2">
+          <button type="submit" class="btn btn-danger btn-lg shadow-sm">Confirm Sale</button>
+          <a href="{% url 'inventory_page' %}" class="btn btn-outline-secondary btn-lg">Cancel</a>
+        </div>
+
+      </form>
+    </div>
   </div>
+
 </div>
 
 <script>
@@ -54,9 +66,56 @@
       customPriceWrap.style.display = "block";
     }
   }
+
   if (custType) {
     custType.addEventListener("change", toggleFields);
     window.addEventListener("load", toggleFields);
   }
 </script>
+
+<style>
+  body {
+    background: linear-gradient(135deg, #232f3e, #1b1f27);
+    color: #f8f9fa;
+  }
+
+  h2 {
+    color: #0d6efd;
+  }
+
+  .card {
+    background-color: #1b1f27;
+    color: #f8f9fa;
+  }
+
+  .form-floating > label {
+    color: #0d6efd;
+  }
+
+  .form-control, .form-select {
+    background-color: #f8f9fa;
+    color: #000;
+  }
+
+  .btn-danger {
+    background: linear-gradient(135deg, #dc3545, #ff6b6b);
+    border: none;
+    color: #fff;
+  }
+
+  .btn-danger:hover {
+    background: linear-gradient(135deg, #ff6b6b, #dc3545);
+  }
+
+  .btn-outline-secondary {
+    border: 2px solid #6c757d;
+    color: #6c757d;
+  }
+
+  .btn-outline-secondary:hover {
+    background: #6c757d;
+    color: #fff;
+  }
+</style>
+
 {% endblock %}

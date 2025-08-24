@@ -1,30 +1,99 @@
 {% extends "base.html" %}
 {% load form_extras %}
 {% block content %}
-<h2>Edit Tyre</h2>
-<div class="card">
-  <div class="card-body">
-    <p><strong>{{ tyre.brand }}</strong> — {{ tyre.model_with_size }} ({{ tyre.tube_type }})</p>
 
-    <form method="post" class="row g-3">
-      {% csrf_token %}
-      <div class="col-md-3">
-        <label class="form-label">Invoice Price</label>
-        {{ form.invoice_price|add_class:"form-control" }}
-      </div>
-      <div class="col-md-3">
-        <label class="form-label">Listed on Amazon?</label><br>
-        {{ form.amazon_listed }}
-      </div>
-      <div class="col-md-3">
-        <label class="form-label">Amazon Price</label>
-        {{ form.amazon_price|add_class:"form-control" }}
-      </div>
-      <div class="col-12">
-        <button class="btn btn-primary">Save</button>
-        <a href="{% url 'inventory_page' %}" class="btn btn-secondary">Back</a>
-      </div>
-    </form>
+<div class="container mt-5">
+
+  <div class="mb-4">
+      <a href="{% url 'admin_inventory' %}" class="btn btn-outline-danger">
+          ← Back to Inventory
+      </a>
   </div>
+
+  <div class="card shadow-lg border-0">
+    <div class="card-header bg-primary text-white">
+      <h3 class="mb-0">Edit Tyre</h3>
+      <p class="mb-0"><strong>{{ tyre.brand }}</strong> — {{ tyre.model_with_size }} ({{ tyre.tube_type }})</p>
+    </div>
+    <div class="card-body">
+      <form method="post" class="row g-4">
+        {% csrf_token %}
+
+        <!-- Invoice Price -->
+        <div class="col-md-3 form-floating">
+          {{ form.invoice_price|add_class:"form-control" }}
+          <label>Invoice Price</label>
+        </div>
+
+        <!-- Amazon Listed -->
+        <div class="col-md-3 d-flex align-items-center mt-2">
+          <div class="form-check">
+            {{ form.amazon_listed|add_class:"form-check-input" }}
+            <label class="form-check-label">Listed on Amazon?</label>
+          </div>
+        </div>
+
+        <!-- Amazon Price -->
+        <div class="col-md-3 form-floating">
+          {{ form.amazon_price|add_class:"form-control" }}
+          <label>Amazon Price</label>
+        </div>
+
+        <!-- Save / Back Buttons -->
+        <div class="col-12 d-flex gap-2">
+          <button type="submit" class="btn btn-success btn-lg shadow-sm w-25">
+            Save
+          </button>
+          <a href="{% url 'admin_inventory' %}" class="btn btn-outline-secondary btn-lg w-25">
+            Back
+          </a>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
 </div>
+
+<style>
+  body {
+    background: linear-gradient(135deg, #232f3e, #1b1f27);
+    color: #f8f9fa;
+  }
+  .card-header {
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+  .form-floating > label {
+    color: #0d6efd;
+  }
+  .form-control {
+    background-color: #f8f9fa;
+  }
+  .btn-success {
+    background: linear-gradient(135deg, #198754, #20c997);
+    border: none;
+    color: #fff;
+  }
+  .btn-success:hover {
+    background: linear-gradient(135deg, #20c997, #198754);
+  }
+  .btn-outline-danger {
+    border: 2px solid #dc3545;
+    color: #dc3545;
+  }
+  .btn-outline-danger:hover {
+    background: #dc3545;
+    color: #fff;
+  }
+  .btn-outline-secondary {
+    border: 2px solid #6c757d;
+    color: #6c757d;
+  }
+  .btn-outline-secondary:hover {
+    background: #6c757d;
+    color: #fff;
+  }
+</style>
+
 {% endblock %}
